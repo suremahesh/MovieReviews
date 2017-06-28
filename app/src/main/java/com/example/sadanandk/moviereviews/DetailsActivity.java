@@ -42,10 +42,13 @@ public class DetailsActivity extends AppCompatActivity {
     TextView rating;
     TextView overview;
     ListView lv;
+
     ProgressDialog pd;
     String json_string;
     String movie_id;
     ArrayList<PojoVideo> arrayListVideo;
+
+    //this is code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
