@@ -49,6 +49,7 @@ public class DetailsActivity extends AppCompatActivity {
     ArrayList<PojoVideo> arrayListVideo;
 
     //this is code
+    //this is code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
