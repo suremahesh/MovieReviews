@@ -1,7 +1,12 @@
 package com.example.sadanandk.moviereviews;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,14 +44,59 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog pd;
     GridView g1;
     PojoImage pj;
+    boolean flag;
     ArrayList<PojoImage> arrayList;
-  //  private static final String BASE_URL_TOP_RATED = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
+     boolean internet;
+    BroadcastReceiver b;
+    //  private static final String BASE_URL_TOP_RATED = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+         internet=isOnline();
+
+
+
         pd = new ProgressDialog(this);
+
+        if(savedInstanceState!=null) {
+            if (savedInstanceState.getBoolean("flag") == true) {
+                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
+               // checkinternetconn();
+                sortMoview();
+// Toast.makeText(this, "" + savedInstanceState.getBoolean("flag"), Toast.LENGTH_SHORT).show();
+// Toast.makeText(this, "state is not null", Toast.LENGTH_SHORT).show();
+            }
+            if (savedInstanceState.getBoolean("flag") == false) {
+// Toast.makeText(this, "" + savedInstanceState.getBoolean("flag"), Toast.LENGTH_SHORT).show();
+// Toast.makeText(this, "state is not null", Toast.LENGTH_SHORT).show();
+              //  checkinternetconn();
+                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
+
+                sortMoview();
+            }
+        }
+        else
+        {
+
+
+            if(internet) {
+
+
+                sortMoview();
+                flag = true;
+            }
+            else
+            {
+                Toast.makeText(this, "please check connection!!!!", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
 
       //  g1 = (GridView) findViewById(R.id.g1);
       //  arrayList = new ArrayList<>();
@@ -117,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });*/
-        sortMoview();
+
 
 
 
@@ -133,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.top_rated:
+                flag=true;
 
 /*
                 g1 = (GridView) findViewById(R.id.g1);
@@ -163,13 +214,18 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             case R.id.popular:
+                flag=false;
 /*
                 g1 = (GridView) findViewById(R.id.g1);
                 arrayList = new ArrayList<>();
 */
 
+
+
+
                 BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
                 sortMoview();
+
               /*  new MyAsyncTask().execute();
                 g1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -197,8 +253,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class MyAsyncTask extends AsyncTask<String, String, String> {
-
+    class MyAsyncTask extends AsyncTask<String, String, String>
+    {
 
         @Override
         protected void onPreExecute() {
@@ -217,16 +273,18 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             URL url1 = null;
             try {
-                url1 = new URL(BASE_URL_POPULAR);
 
-                URLConnection con = url1.openConnection();
-                HttpURLConnection http = (HttpURLConnection) con;
-                http.connect();
+                    url1 = new URL(BASE_URL_POPULAR);
 
-                InputStream is = http.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                json_string = br.readLine();
+                    URLConnection con = url1.openConnection();
+                    HttpURLConnection http = (HttpURLConnection) con;
+                    http.connect();
+
+                    InputStream is = http.getInputStream();
+                    InputStreamReader isr = new InputStreamReader(is);
+                    BufferedReader br = new BufferedReader(isr);
+                    json_string = br.readLine();
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -310,6 +368,68 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("flag",flag);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        flag = savedInstanceState.getBoolean("flag");
+    }
+    /*public void checkinternetconn()
+    {
+        IntentFilter i=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        b=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int[] type={ConnectivityManager.TYPE_MOBILE,ConnectivityManager.TYPE_WIFI};
+
+                 *//*if(ConnectivityReceiver.isnetworkavilable(context,type))
+                 {
+                     return;
+                 }else
+                 {
+                     Toast.makeText(context, "no internet", Toast.LENGTH_SHORT).show();
+                 }*//*
+
+
+                ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                for(int typnetwork : type)
+                {
+                    NetworkInfo ni=cm.getNetworkInfo(typnetwork);
+                    if(ni!=null && ni.getState()== NetworkInfo.State.CONNECTED)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }
+
+                }
+
+            }
+        };
+        registerReceiver(b,i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(b);
+    }*/
 }
 
 

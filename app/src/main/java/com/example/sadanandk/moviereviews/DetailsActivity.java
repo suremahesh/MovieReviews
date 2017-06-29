@@ -1,7 +1,12 @@
 package com.example.sadanandk.moviereviews;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -45,6 +50,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     ProgressDialog pd;
     String json_string;
+    BroadcastReceiver b;
     String movie_id;
     ArrayList<PojoVideo> arrayListVideo;
 
@@ -55,7 +61,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
+        checkinternetconn();
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
 
@@ -195,6 +201,49 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         }
+    public void checkinternetconn()
+    {
+        IntentFilter i=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        b=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int[] type={ConnectivityManager.TYPE_MOBILE,ConnectivityManager.TYPE_WIFI};
+
+                 /*if(ConnectivityReceiver.isnetworkavilable(context,type))
+                 {
+                     return;
+                 }else
+                 {
+                     Toast.makeText(context, "no internet", Toast.LENGTH_SHORT).show();
+                 }*/
+
+
+                ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                for(int typnetwork : type)
+                {
+                    NetworkInfo ni=cm.getNetworkInfo(typnetwork);
+                    if(ni!=null && ni.getState()== NetworkInfo.State.CONNECTED)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }
+
+                }
+
+            }
+        };
+        registerReceiver(b,i);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(b);
+    }
 
 }
 

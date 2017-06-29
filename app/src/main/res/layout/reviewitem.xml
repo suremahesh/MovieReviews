@@ -6,9 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/t1"
-        android:textSize="25dp"/>
+        android:textSize="20dp"/>
 
     <TextView
+        android:hint="by"
+        android:gravity="end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/t2"
