@@ -4,12 +4,11 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,19 +17,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,211 +27,67 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-   String BASE_URL_POPULAR ="https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";// "http://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
+    String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/";// "http://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
     String json_string;
     ProgressDialog pd;
     GridView g1;
     PojoImage pj;
     boolean flag;
     ArrayList<PojoImage> arrayList;
-     boolean internet;
+    boolean internet;
     BroadcastReceiver b;
+    String popular = "popular",top_rated ="top_rated";
     //  private static final String BASE_URL_TOP_RATED = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-         internet=isOnline();
-
-
-
+        internet = isOnline();
         pd = new ProgressDialog(this);
-
-        if(savedInstanceState!=null) {
-            if (savedInstanceState.getBoolean("flag") == true) {
-                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
-               // checkinternetconn();
-                sortMoview();
-// Toast.makeText(this, "" + savedInstanceState.getBoolean("flag"), Toast.LENGTH_SHORT).show();
-// Toast.makeText(this, "state is not null", Toast.LENGTH_SHORT).show();
+        g1 = (GridView) findViewById(R.id.g1);
+        if (savedInstanceState != null) {
+            int count = savedInstanceState.getInt("count");
+            if (savedInstanceState.getBoolean("flag")) {
+                g1.setSelection(count);
+                sortMoview(top_rated);
             }
-            if (savedInstanceState.getBoolean("flag") == false) {
-// Toast.makeText(this, "" + savedInstanceState.getBoolean("flag"), Toast.LENGTH_SHORT).show();
-// Toast.makeText(this, "state is not null", Toast.LENGTH_SHORT).show();
-              //  checkinternetconn();
-                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
+            if (!savedInstanceState.getBoolean("flag")) {
 
-                sortMoview();
+                g1.setSelection(count);
+                sortMoview(popular);
             }
-        }
-        else
-        {
-
-
-            if(internet) {
-
-
-                sortMoview();
+        } else {
+            if (internet) {
+                sortMoview(top_rated);
                 flag = true;
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "please check connection!!!!", Toast.LENGTH_SHORT).show();
             }
-
-
         }
-
-      //  g1 = (GridView) findViewById(R.id.g1);
-      //  arrayList = new ArrayList<>();
-        /*System.out.println("0000000");
-
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL_POPULAR).addConverterFactory(GsonConverterFactory.create()).build();
-        System.out.println("1111111111");
-        *//*retrofit.create(AppConfig.class).getData().enqueue(new Callback<MovieDetails>() {
-            @Override
-            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
-                System.out.println("2222222222222");
-
-                MovieDetails record = response.body();
-
-                Toast.makeText(getApplicationContext(), record.getPage() + "", Toast.LENGTH_LONG).show();
-               // Toast.makeText(getApplicationContext(), record.getEmployeeList() + "", Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), record.getResults().get(0).getTitle() + "", Toast.LENGTH_LONG).show();
-
-
-            }
-
-            @Override
-            public void onFailure(Call<MovieDetails> call, Throwable t) {
-
-            }
-        });*//*
-        AppConfig appconfih=retrofit.create(AppConfig.class);
-
-        Call<MovieDetails> ma  =appconfih.getMovieData();
-
-        System.out.println("2222222222222222");
-        ma.enqueue(new Callback<MovieDetails>() {
-            @Override
-            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response)
-            {
-                System.out.println("3333333333333333");
-                //Toast.makeText(MainActivity.this, ""+response.body().getPage(), Toast.LENGTH_SHORT).show();
-
-                MovieDetails record = response.body();
-
-                System.out.println("5555555555555"+record.getTotalPages());
-
-
-            }
-            @Override
-            public void onFailure(Call<MovieDetails> call, Throwable t) {
-                System.out.println("444444444444444");
-
-            }
-        });*/
-
-
-        /*new MyAsyncTask().execute();
-        g1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                //String id1 = arrayList.get(position).getId();
-
-                Intent i=new Intent(MainActivity.this,DetailsActivity.class);
-                i.putExtra("title",arrayList.get(position).getOriginal_title());
-                i.putExtra("image",arrayList.get(position).getUrl());
-                i.putExtra("rating",arrayList.get(position).getVote_average());
-                i.putExtra("releasedate",arrayList.get(position).getRelease_date());
-                i.putExtra("overview",arrayList.get(position).getOverview());
-                startActivity(i);
-
-            }
-        });*/
-
-
-
-
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_item, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.top_rated:
-                flag=true;
-
-/*
-                g1 = (GridView) findViewById(R.id.g1);
-                arrayList = new ArrayList<>();
-*/
-
-                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/top_rated?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
-                sortMoview();
-                /*new MyAsyncTask().execute();
-                g1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        //String id1 = arrayList.get(position).getId();
-
-                        Intent i=new Intent(MainActivity.this,DetailsActivity.class);
-                        i.putExtra("title",arrayList.get(position).getOriginal_title());
-                        i.putExtra("image",arrayList.get(position).getUrl());
-                        i.putExtra("rating",arrayList.get(position).getVote_average());
-                        i.putExtra("releasedate",arrayList.get(position).getRelease_date());
-                        i.putExtra("overview",arrayList.get(position).getOverview());
-                        startActivity(i);
-
-                    }
-                });*/
+                flag = true;
+                sortMoview(top_rated);
 
 
 
                 return true;
             case R.id.popular:
-                flag=false;
-/*
-                g1 = (GridView) findViewById(R.id.g1);
-                arrayList = new ArrayList<>();
-*/
-
-
-
-
-                BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=b24e007d75e5c16e171c9d4ffceea3b2";
-                sortMoview();
-
-              /*  new MyAsyncTask().execute();
-                g1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        //String id1 = arrayList.get(position).getId();
-
-                        Intent i=new Intent(MainActivity.this,DetailsActivity.class);
-                        i.putExtra("title",arrayList.get(position).getOriginal_title());
-                        i.putExtra("image",arrayList.get(position).getUrl());
-                        i.putExtra("rating",arrayList.get(position).getVote_average());
-                        i.putExtra("releasedate",arrayList.get(position).getRelease_date());
-                        i.putExtra("overview",arrayList.get(position).getOverview());
-                        startActivity(i);
-
-                    }
-                });*/
-
+                flag = false;
+                sortMoview(popular);
 
                 return true;
 
@@ -253,114 +97,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class MyAsyncTask extends AsyncTask<String, String, String>
+    public void sortMoview(String path)
     {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(MainActivity.this);
-            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pd.setMessage("fecthing data from server");
-            pd.setTitle("loading");
-
-            pd.show();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            URL url1 = null;
-            try {
-
-                    url1 = new URL(BASE_URL_POPULAR);
-
-                    URLConnection con = url1.openConnection();
-                    HttpURLConnection http = (HttpURLConnection) con;
-                    http.connect();
-
-                    InputStream is = http.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(is);
-                    BufferedReader br = new BufferedReader(isr);
-                    json_string = br.readLine();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return json_string;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            pd.dismiss();
-            try {
-                JSONObject js = new JSONObject(s);
-                JSONArray ja = js.getJSONArray("results");
-
-                for (int i = 0; i < ja.length(); i++) {
-                    JSONObject js1 = ja.getJSONObject(i);
-                    String poster = js1.getString("poster_path");
-                    String id = js1.getString("id");
-                    String original_title = js1.getString("original_title");
-                    String vote_average = js1.getString("vote_average");
-                    String release_date = js1.getString("release_date");
-                    String overview = js1.getString("overview");
-
-
-                    pj = new PojoImage();
-                    pj.setUrl(poster);
-                    pj.setId(id);
-                    pj.setOriginal_title(original_title);
-                    pj.setVote_average(vote_average);
-
-                    pj.setOverview(overview);
-                    pj.setRelease_date(release_date);
-
-
-                    arrayList.add(pj);
-
-
-                }
-
-                GridViewAdapter ga = new GridViewAdapter(MainActivity.this, R.layout.grid_item, arrayList);
-                ga.notifyDataSetChanged();
-                g1.invalidateViews();
-                g1.setAdapter(ga);
-
-                //  Toast.makeText(MainActivity.this, ""+js.getString("total_results"), Toast.LENGTH_SHORT).show();
-               // Toast.makeText(MainActivity.this, "" + js.getString("total_pages"), Toast.LENGTH_SHORT).show();
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public  void sortMoview()
-    {
         g1 = (GridView) findViewById(R.id.g1);
         arrayList = new ArrayList<>();
+       // new MyAsyncTask().execute();
+        getData(path);
 
-        new MyAsyncTask().execute();
         g1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //String id1 = arrayList.get(position).getId();
 
-                Intent i=new Intent(MainActivity.this,DetailsActivity.class);
-                i.putExtra("title",arrayList.get(position).getOriginal_title());
-                i.putExtra("image",arrayList.get(position).getUrl());
-                i.putExtra("rating",arrayList.get(position).getVote_average());
-                i.putExtra("releasedate",arrayList.get(position).getRelease_date());
-                i.putExtra("overview",arrayList.get(position).getOverview());
-                i.putExtra("id",arrayList.get(position).getId());
+                Intent i = new Intent(MainActivity.this, DetailsActivity.class);
+                i.putExtra("title", arrayList.get(position).getOriginal_title());
+                i.putExtra("image", arrayList.get(position).getUrl());
+                i.putExtra("rating", arrayList.get(position).getVote_average());
+                i.putExtra("releasedate", arrayList.get(position).getRelease_date());
+                i.putExtra("overview", arrayList.get(position).getOverview());
+                i.putExtra("id", arrayList.get(position).getId());
                 startActivity(i);
 
             }
@@ -379,7 +135,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean("flag",flag);
+        outState.putBoolean("flag", flag);
+        int cout = g1.getFirstVisiblePosition();
+        outState.putInt("count", cout);
     }
 
     @Override
@@ -387,49 +145,38 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         flag = savedInstanceState.getBoolean("flag");
     }
-    /*public void checkinternetconn()
+    void getData(String path)
     {
-        IntentFilter i=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        b=new BroadcastReceiver() {
+        pd.show();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL_POPULAR).addConverterFactory(GsonConverterFactory.create()).build();
+        retrofit.create(AppConfig.class).getMovieData(path).enqueue(new Callback<MovieDetails>() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                int[] type={ConnectivityManager.TYPE_MOBILE,ConnectivityManager.TYPE_WIFI};
+            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+                List<Result> record = response.body().getResults();
+                for (Result ac : record) {
+                    pj = new PojoImage();
+                    pj.setUrl(ac.getPosterPath());
+                    pj.setId(ac.getId().toString());
+                    pj.setOriginal_title(ac.getOriginalTitle());
+                    pj.setVote_average(ac.getVoteAverage().toString());
 
-                 *//*if(ConnectivityReceiver.isnetworkavilable(context,type))
-                 {
-                     return;
-                 }else
-                 {
-                     Toast.makeText(context, "no internet", Toast.LENGTH_SHORT).show();
-                 }*//*
-
-
-                ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                for(int typnetwork : type)
-                {
-                    NetworkInfo ni=cm.getNetworkInfo(typnetwork);
-                    if(ni!=null && ni.getState()== NetworkInfo.State.CONNECTED)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-
+                    pj.setOverview(ac.getOverview());
+                    pj.setRelease_date(ac.getReleaseDate());
+                    arrayList.add(pj);
                 }
-
+                GridViewAdapter ga = new GridViewAdapter(MainActivity.this, R.layout.grid_item, arrayList);
+                ga.notifyDataSetChanged();
+                g1.invalidateViews();
+                g1.setAdapter(ga);
+                pd.dismiss();
             }
-        };
-        registerReceiver(b,i);
+
+            @Override
+            public void onFailure(Call<MovieDetails> call, Throwable t) {
+                // Toast.makeText(getApplicationContext()," on failure" +t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(" on failure",t.getMessage());
+            }
+        });
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(b);
-    }*/
 }
-
 

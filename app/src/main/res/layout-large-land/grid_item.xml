@@ -7,9 +7,9 @@
 
     <ImageView
         android:contentDescription="@string/poster_of_movie"
-      android:scaleType="fitXY"
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="300dp"
         android:id="@+id/i1"/>
     <TextView
         android:visibility="gone"

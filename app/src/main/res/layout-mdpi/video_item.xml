@@ -9,6 +9,7 @@
 
 
     <TextView
+        android:padding="5dp"
         android:drawableStart="@drawable/ic_play_arrow_black_24dp"
         android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
         android:layout_gravity="center"

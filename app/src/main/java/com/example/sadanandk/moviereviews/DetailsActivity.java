@@ -1,15 +1,18 @@
 package com.example.sadanandk.moviereviews;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.squareup.picasso.Picasso;
 
@@ -34,25 +38,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    TextView title;
-    ImageView image_detail;
-    TextView releasedate;
-    TextView rating;
-    TextView overview;
-    ListView lv;
+    private  TextView title;
+    private ImageView image_detail;
+    private TextView releasedate;
+    private TextView rating;
+    private TextView overview;
+    private ListView lv;
 
     ProgressDialog pd;
     String json_string;
-    BroadcastReceiver b;
-    String movie_id;
-    ArrayList<PojoVideo> arrayListVideo;
+
+   private String movie_id;
+   private LinearLayout ll;
+    private ArrayList<PojoVideo> arrayListVideo;
 
     //this is code
     //this is code
@@ -61,11 +65,13 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        checkinternetconn();
+        //checkinternetconn();
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
 
-
+        ll = (LinearLayout) findViewById(R.id.ll1);
         title = (TextView) findViewById(R.id.title_detail);
         lv = (ListView) findViewById(R.id.lv);
         image_detail = (ImageView) findViewById(R.id.image_detail);
@@ -91,7 +97,23 @@ public class DetailsActivity extends AppCompatActivity {
 
         System.out.println("sasa111111111");
 
-        new MYAsyncTask().execute();
+        if(isOnline()) {
+            new MYAsyncTask().execute();
+        }else
+        {
+            AlertDialog ad=new AlertDialog.Builder(this)
+                    .setTitle("INTERNET IS NOT AVAILABLE")
+                    .setMessage("plese check connection")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .create();
+
+            ad.show();
+        }
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -136,7 +158,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-        class MYAsyncTask extends AsyncTask<String, String, String> {
+        private  class MYAsyncTask extends AsyncTask<String, String, String> {
             @Override
             protected void onPreExecute() {
                 System.out.println("sas222222222222");
@@ -152,7 +174,7 @@ public class DetailsActivity extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-                URL url1 = null;
+                URL url1;
                 try {
                     url1 = new URL("https://api.themoviedb.org/3/movie/" + movie_id + "/videos?api_key=7a2a50af24de2babb36f18505f377efb");
 
@@ -164,9 +186,7 @@ public class DetailsActivity extends AppCompatActivity {
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
                     json_string = br.readLine();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
+                }  catch (IOException e) {
                     e.printStackTrace();
                 }
                 return json_string;
@@ -201,48 +221,12 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         }
-    public void checkinternetconn()
-    {
-        IntentFilter i=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        b=new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                int[] type={ConnectivityManager.TYPE_MOBILE,ConnectivityManager.TYPE_WIFI};
 
-                 /*if(ConnectivityReceiver.isnetworkavilable(context,type))
-                 {
-                     return;
-                 }else
-                 {
-                     Toast.makeText(context, "no internet", Toast.LENGTH_SHORT).show();
-                 }*/
-
-
-                ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                for(int typnetwork : type)
-                {
-                    NetworkInfo ni=cm.getNetworkInfo(typnetwork);
-                    if(ni!=null && ni.getState()== NetworkInfo.State.CONNECTED)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
-                        pd.dismiss();
-                    }
-
-                }
-
-            }
-        };
-        registerReceiver(b,i);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(b);
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 }

@@ -8,15 +8,14 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -39,6 +37,8 @@ public class ReviewActivity extends AppCompatActivity {
     ArrayList<PojoReview> al;
     ListView lvreview;
     String id;
+    LinearLayout ll2;
+
     BroadcastReceiver b;
      ImageView image;
 
@@ -48,7 +48,10 @@ public class ReviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review);
 
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
+        ll2= (LinearLayout) findViewById(R.id.ll2);
 
         lvreview= (ListView) findViewById(R.id.lv_review);
         image=(ImageView)findViewById(R.id.image_not);
@@ -87,7 +90,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            URL url1 = null;
+            URL url1;
             try {
                 url1 = new URL("https://api.themoviedb.org/3/movie/"+id+"/reviews?api_key=7a2a50af24de2babb36f18505f377efb");
 
@@ -99,9 +102,7 @@ public class ReviewActivity extends AppCompatActivity {
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
                 json_string = br.readLine();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            }  catch (IOException e) {
                 e.printStackTrace();
             }
             return json_string;
@@ -119,7 +120,7 @@ public class ReviewActivity extends AppCompatActivity {
 
                 if(totalresults.equals("0"))
                 {
-                    Toast.makeText(ReviewActivity.this, "No Revweis Available", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(ReviewActivity.this, "No Revweis Available", Toast.LENGTH_SHORT).show();
                     image.setVisibility(View.VISIBLE);
 
 
@@ -187,9 +188,12 @@ public class ReviewActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
+
                         pd.dismiss();
+                        Snackbar.make(ll2,"No Internet..",Snackbar.LENGTH_LONG).show();
                     }
+
 
                 }
 
@@ -203,5 +207,6 @@ public class ReviewActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(b);
     }
+
 
 }

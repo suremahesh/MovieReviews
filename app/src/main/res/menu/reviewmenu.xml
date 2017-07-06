@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/revies"
-        android:title="Reviews"
+        android:title="@string/reviews"
         app:showAsAction="never"/>
 </menu>

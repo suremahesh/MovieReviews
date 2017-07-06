@@ -7,21 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by sadanandk on 6/27/2017.
- */
 
-public class GridViewAdapter extends BaseAdapter
+ class GridViewAdapter extends BaseAdapter
 {
-    Context context;
-    int xml_file;
-    ArrayList<PojoImage> pj;
+   private Context context;
+    private int xml_file;
+    private ArrayList<PojoImage> pj;
     GridViewAdapter(Context context, int xml_file,ArrayList<PojoImage> pj)
     {
     this.context = context;
@@ -53,9 +49,6 @@ public class GridViewAdapter extends BaseAdapter
         TextView tv = (TextView) v.findViewById(R.id.movie_tital);
         Picasso.with(context).load("http://image.tmdb.org/t/p/w500/"+pj.get(position).getUrl()).into(iv);
         tv.setText(pj.get(position).getId());
-      //  Toast.makeText(context, ""+pj.size(), Toast.LENGTH_SHORT).show();
-        // http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg
-
         return v;
     }
 }

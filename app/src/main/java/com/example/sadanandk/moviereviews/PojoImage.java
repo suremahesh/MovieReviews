@@ -1,10 +1,7 @@
 package com.example.sadanandk.moviereviews;
 
-/**
- * Created by sadanandk on 6/27/2017.
- */
 
-public class PojoImage
+ class PojoImage
 {
     String id;
     String url;

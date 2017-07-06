@@ -2,18 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+
+    <!--<android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv"></android.support.v7.widget.RecyclerView>
+-->
+    <GridView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/t1"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:hint="@string/by"
-        android:gravity="end"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/t2"
-        android:textSize="15sp"/>
-
+        android:id="@+id/g1"
+        android:numColumns="2"
+        />
 </LinearLayout>

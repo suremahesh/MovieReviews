@@ -66,6 +66,7 @@
             <TextView
 
                 android:hint="@string/rating"
+
                 android:layout_width="match_parent"
 
                 android:layout_gravity="center"
@@ -112,7 +113,6 @@
 
 
     </ScrollView>
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="250dp"
