@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by sadanandk on 6/27/2017.
  */
 
-public class Result {
+class Result {
 
     @SerializedName("vote_count")
     @Expose
@@ -52,14 +52,6 @@ public class Result {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
-
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
 
     public Integer getId() {
         return id;

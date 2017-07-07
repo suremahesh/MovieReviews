@@ -1,14 +1,11 @@
 package com.example.sadanandk.moviereviews;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,15 +30,14 @@ import java.util.ArrayList;
 
 public class ReviewActivity extends AppCompatActivity {
 
-     ProgressDialog pd;
-     String json_string;
-    ArrayList<PojoReview> al;
-    ListView lvreview;
-    String id;
-    LinearLayout ll2;
+     private ProgressDialog pd;
+     private String json_string;
+    private ArrayList<PojoReview> al;
+    private ListView lvreview;
+    private String id;
 
-    BroadcastReceiver b;
-     ImageView image;
+
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +48,7 @@ public class ReviewActivity extends AppCompatActivity {
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
         }
-        ll2= (LinearLayout) findViewById(R.id.ll2);
+        LinearLayout ll2 = (LinearLayout) findViewById(R.id.ll2);
 
         lvreview= (ListView) findViewById(R.id.lv_review);
         image=(ImageView)findViewById(R.id.image_not);
@@ -61,8 +58,14 @@ public class ReviewActivity extends AppCompatActivity {
       //  Toast.makeText(this, ""+id, Toast.LENGTH_SHORT).show();
 
         al=new ArrayList<>();
-        checkinternetconn();
-        new MyAsynctask1().execute();
+        Boolean net=isOnline();
+        if(net) {
+            new MyAsynctask1().execute();
+        }else
+        {
+            Toast.makeText(this, "please check internet connection", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -72,7 +75,7 @@ public class ReviewActivity extends AppCompatActivity {
 
     }
 
-    class MyAsynctask1 extends AsyncTask<String,String,String>
+    private class MyAsynctask1 extends AsyncTask<String,String,String>
     {
 
         @Override
@@ -143,7 +146,7 @@ public class ReviewActivity extends AppCompatActivity {
 
 
                     }
-                    ReviewAdapter r = new ReviewAdapter(ReviewActivity.this, R.layout.reviewitem, al);
+                    ReviewAdapter r = new ReviewAdapter(ReviewActivity.this, al);
                     lvreview.setAdapter(r);
 
                 }
@@ -161,51 +164,12 @@ public class ReviewActivity extends AppCompatActivity {
 
 
     }
-    public void checkinternetconn()
-    {
-        IntentFilter i=new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        b=new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                int[] type={ConnectivityManager.TYPE_MOBILE,ConnectivityManager.TYPE_WIFI};
 
-                 /*if(ConnectivityReceiver.isnetworkavilable(context,type))
-                 {
-                     return;
-                 }else
-                 {
-                     Toast.makeText(context, "no internet", Toast.LENGTH_SHORT).show();
-                 }*/
-
-
-                ConnectivityManager cm=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                for(int typnetwork : type)
-                {
-                    NetworkInfo ni=cm.getNetworkInfo(typnetwork);
-                    if(ni!=null && ni.getState()== NetworkInfo.State.CONNECTED)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                       // Toast.makeText(context, "nointernet", Toast.LENGTH_SHORT).show();
-
-                        pd.dismiss();
-                        Snackbar.make(ll2,"No Internet..",Snackbar.LENGTH_LONG).show();
-                    }
-
-
-                }
-
-            }
-        };
-        registerReceiver(b,i);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(b);
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 

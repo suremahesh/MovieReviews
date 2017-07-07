@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,23 +43,13 @@ import java.util.ArrayList;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    private  TextView title;
-    private ImageView image_detail;
-    private TextView releasedate;
-    private TextView rating;
-    private TextView overview;
     private ListView lv;
 
-    ProgressDialog pd;
-    String json_string;
+    private ProgressDialog pd;
+    private String json_string;
 
    private String movie_id;
-   private LinearLayout ll;
     private ArrayList<PojoVideo> arrayListVideo;
-
-    //this is code
-    //this is code
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +60,13 @@ public class DetailsActivity extends AppCompatActivity {
             actionbar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ll = (LinearLayout) findViewById(R.id.ll1);
-        title = (TextView) findViewById(R.id.title_detail);
+        TextView title = (TextView) findViewById(R.id.title_detail);
         lv = (ListView) findViewById(R.id.lv);
-        image_detail = (ImageView) findViewById(R.id.image_detail);
+        ImageView image_detail = (ImageView) findViewById(R.id.image_detail);
 
-        rating = (TextView) findViewById(R.id.rating);
-        releasedate = (TextView) findViewById(R.id.releasedate);
-        overview = (TextView) findViewById(R.id.overview);
+        TextView rating = (TextView) findViewById(R.id.rating);
+        TextView releasedate = (TextView) findViewById(R.id.releasedate);
+        TextView overview = (TextView) findViewById(R.id.overview);
 
         arrayListVideo = new ArrayList<>();
 
@@ -212,7 +200,7 @@ public class DetailsActivity extends AppCompatActivity {
                         arrayListVideo.add(pv);
                     }
 
-                    VideoAdapter va = new VideoAdapter(DetailsActivity.this, R.layout.video_item, arrayListVideo);
+                    VideoAdapter va = new VideoAdapter(DetailsActivity.this, arrayListVideo);
                     lv.setAdapter(va);
                 } catch (JSONException e) {
                     e.printStackTrace();

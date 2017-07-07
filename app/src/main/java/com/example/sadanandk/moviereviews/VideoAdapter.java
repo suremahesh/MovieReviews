@@ -14,15 +14,13 @@ import java.util.ArrayList;
  * Created by sadanandk on 6/28/2017.
  */
 
-public class VideoAdapter extends BaseAdapter {
-    Context context;
-    int xml_view;
-    ArrayList<PojoVideo> arrayList1;
+class VideoAdapter extends BaseAdapter {
+    private final Context context;
+    private final ArrayList<PojoVideo> arrayList1;
 
-    VideoAdapter(Context context , int xml_view, ArrayList<PojoVideo> arrayList1)
+    VideoAdapter(Context context, ArrayList<PojoVideo> arrayList1)
     {
         this.context = context;
-        this.xml_view = xml_view;
         this.arrayList1 = arrayList1;
     }
     @Override
@@ -48,7 +46,7 @@ public class VideoAdapter extends BaseAdapter {
 
         if(v==null) {
             LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-             v = li.inflate(xml_view, parent, false);
+             v = li.inflate(R.layout.video_item, parent, false);
 
             holder=new ViewHolder2();
 

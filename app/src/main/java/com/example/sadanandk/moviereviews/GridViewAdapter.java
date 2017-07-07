@@ -17,13 +17,11 @@
 
 class GridViewAdapter extends BaseAdapter
 {
-    private Context context;
-    private int xml_file;
-    private ArrayList<PojoImage> pj;
-    GridViewAdapter(Context context, int xml_file,ArrayList<PojoImage> pj)
+    private final Context context;
+    private final ArrayList<PojoImage> pj;
+    GridViewAdapter(Context context, ArrayList<PojoImage> pj)
     {
         this.context = context;
-        this.xml_file = xml_file;
         this.pj = pj;
     }
     @Override
@@ -51,7 +49,7 @@ class GridViewAdapter extends BaseAdapter
         if(v==null) {
 
             LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = li.inflate(xml_file, parent, false);
+            v = li.inflate(R.layout.grid_item, parent, false);
 
             holder=new ViewHolder();
             holder.iv = (ImageView) v.findViewById(R.id.i1);

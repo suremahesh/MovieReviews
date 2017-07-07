@@ -1,13 +1,13 @@
 package com.example.sadanandk.moviereviews;
 
 
- class PojoImage
+class PojoImage
 {
-    String id;
-    String url;
-    String original_title;
-    String vote_average;
-    String release_date;
+    private String id;
+    private String url;
+    private String original_title;
+    private String vote_average;
+    private String release_date;
 
     public String getOriginal_title() {
         return original_title;
@@ -41,7 +41,7 @@ package com.example.sadanandk.moviereviews;
         this.overview = overview;
     }
 
-    String overview;
+    private String overview;
 
     public String getId() {
 
@@ -56,7 +56,11 @@ package com.example.sadanandk.moviereviews;
         return url;
     }
 
+
     public void setUrl(String url) {
         this.url = url;
     }
+
+
+
 }

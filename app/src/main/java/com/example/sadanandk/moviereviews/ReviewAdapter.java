@@ -9,21 +9,18 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static android.R.attr.author;
-
 /**
  * Created by maheshs on 6/28/2017.
  */
 
-public class ReviewAdapter extends BaseAdapter
+class ReviewAdapter extends BaseAdapter
 {
-    Context context;
-    int xml_file;
-    ArrayList<PojoReview> pj;
-    ReviewAdapter(Context context, int xml_file,ArrayList<PojoReview> pj)
+    private final Context context;
+
+    private final ArrayList<PojoReview> pj;
+    ReviewAdapter(Context context, ArrayList<PojoReview> pj)
     {
         this.context = context;
-        this.xml_file = xml_file;
         this.pj = pj;
     }
     @Override
@@ -50,7 +47,7 @@ public class ReviewAdapter extends BaseAdapter
 
         if(v==null) {
             LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = li.inflate(xml_file, parent, false);
+            v = li.inflate( R.layout.reviewitem, parent, false);
 
 
             //  Toast.makeText(context, ""+pj.size(), Toast.LENGTH_SHORT).show();

@@ -1,10 +1,10 @@
 package com.example.sadanandk.moviereviews;
 
 
-public class PojoReview
+class PojoReview
 {
-    String author;
-    String review;
+    private String author;
+    private String review;
 
 
 

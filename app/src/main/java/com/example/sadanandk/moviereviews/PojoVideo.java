@@ -4,10 +4,10 @@ package com.example.sadanandk.moviereviews;
  * Created by sadanandk on 6/28/2017.
  */
 
-public class PojoVideo
+class PojoVideo
 {
-    String key;
-    String type;
+    private String key;
+    private String type;
 
     public String getKey() {
         return key;
