@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static android.R.attr.author;
+
 /**
  * Created by maheshs on 6/28/2017.
  */
@@ -40,21 +42,39 @@ public class ReviewAdapter extends BaseAdapter
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        View v=convertView;
+        ViewHolder1 holder;
 
-        LayoutInflater li=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=li.inflate(xml_file,parent,false);
+
+        if(v==null) {
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = li.inflate(xml_file, parent, false);
 
 
-        //  Toast.makeText(context, ""+pj.size(), Toast.LENGTH_SHORT).show();
-        // http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg
+            //  Toast.makeText(context, ""+pj.size(), Toast.LENGTH_SHORT).show();
+            // http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg
 
-        TextView review=(TextView)v.findViewById(R.id.t1);
-        TextView author=(TextView)v.findViewById(R.id.t2);
+            holder=new ViewHolder1();
+            holder.review = (TextView) v.findViewById(R.id.t1);
+             holder.author = (TextView) v.findViewById(R.id.t2);
+            v.setTag(holder);
+        }
+        else
+        {
+          holder= (ViewHolder1) v.getTag();
+        }
 
-        review.setText(pj.get(position).getReview());
-        author.setText(pj.get(position).getAuthor());
+        holder.review.setText(pj.get(position).getReview());
+        holder.author.setText(pj.get(position).getAuthor());
 
         return v;
     }
+}
+class ViewHolder1
+{
+
+    TextView review;
+    TextView author;
 }

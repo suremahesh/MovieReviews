@@ -43,12 +43,24 @@ public class VideoAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        LayoutInflater li=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=li.inflate(xml_view,parent,false);
+        View v=convertView;
+        ViewHolder2 holder;
 
-        TextView tv = (TextView) v.findViewById(R.id.name);
+        if(v==null) {
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+             v = li.inflate(xml_view, parent, false);
 
-        tv.setText(arrayList1.get(position).getType());
+            holder=new ViewHolder2();
+
+             holder.tv = (TextView) v.findViewById(R.id.name);
+            v.setTag(holder);
+        }
+        else
+        {
+            holder= (ViewHolder2) v.getTag();
+        }
+
+        holder.tv.setText(arrayList1.get(position).getType());
         Log.e("size",""+arrayList1.size());
 
         //  Toast.makeText(context, ""+pj.size(), Toast.LENGTH_SHORT).show();
@@ -56,4 +68,8 @@ public class VideoAdapter extends BaseAdapter {
 
         return v;
     }
+}
+class ViewHolder2
+{
+    TextView tv;
 }

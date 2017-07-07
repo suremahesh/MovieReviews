@@ -1,28 +1,30 @@
-package com.example.sadanandk.moviereviews;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+        package com.example.sadanandk.moviereviews;
+        import android.content.Context;
 
-import com.squareup.picasso.Picasso;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.BaseAdapter;
+        import android.widget.ImageView;
+        import android.widget.TextView;
 
-import java.util.ArrayList;
+        import com.squareup.picasso.Picasso;
+
+        import java.util.ArrayList;
 
 
- class GridViewAdapter extends BaseAdapter
+class GridViewAdapter extends BaseAdapter
 {
-   private Context context;
+    private Context context;
     private int xml_file;
     private ArrayList<PojoImage> pj;
     GridViewAdapter(Context context, int xml_file,ArrayList<PojoImage> pj)
     {
-    this.context = context;
+        this.context = context;
         this.xml_file = xml_file;
-    this.pj = pj;
+        this.pj = pj;
     }
     @Override
     public int getCount() {
@@ -42,13 +44,40 @@ import java.util.ArrayList;
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater li=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v=li.inflate(xml_file,parent,false);
+        View v=convertView;
+        ViewHolder holder;
 
-        ImageView iv = (ImageView) v.findViewById(R.id.i1);
-        TextView tv = (TextView) v.findViewById(R.id.movie_tital);
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w500/"+pj.get(position).getUrl()).into(iv);
-        tv.setText(pj.get(position).getId());
+
+        if(v==null) {
+
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = li.inflate(xml_file, parent, false);
+
+            holder=new ViewHolder();
+            holder.iv = (ImageView) v.findViewById(R.id.i1);
+            holder.tv = (TextView) v.findViewById(R.id.movie_tital);
+            Log.e("mahessh","ifnull");
+
+            v.setTag(holder);
+        }
+        else {
+
+            holder = (ViewHolder) v.getTag();
+            Log.e("mahessh","ifnotnull");
+
+        }
+
+        Picasso.with(context).load("http://image.tmdb.org/t/p/w500/" + pj.get(position).getUrl()).into(holder.iv);
+        holder.tv.setText(pj.get(position).getId());
+
         return v;
     }
+}
+
+class ViewHolder
+{
+    ImageView iv;
+    TextView tv;
+
+
 }
