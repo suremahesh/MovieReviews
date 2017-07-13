@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        
+
         android:layout_weight="1"
         android:contentDescription="@string/poster_of_movie"
         android:scaleType="fitXY"

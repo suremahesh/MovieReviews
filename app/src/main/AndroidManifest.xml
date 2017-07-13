@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".DetailsActivity" />
         <activity android:name=".ReviewActivity"/>
+        <activity android:name=".FavoriteActivity"/>
     </application>
 
 </manifest>

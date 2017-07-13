@@ -79,6 +79,13 @@
 
                 android:layout_height="wrap_content"
                 android:id="@+id/releasedate"/>
+            <ImageButton
+                android:id="@+id/btnFavorite"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_favorite_black_48dp"
+                style="?borderlessButtonStyle"/>
+
 
 
         </LinearLayout>
