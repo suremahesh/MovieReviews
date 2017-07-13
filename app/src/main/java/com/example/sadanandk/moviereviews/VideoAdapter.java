@@ -67,6 +67,7 @@ class VideoAdapter extends BaseAdapter {
         return v;
     }
 }
+
 class ViewHolder2
 {
     TextView tv;

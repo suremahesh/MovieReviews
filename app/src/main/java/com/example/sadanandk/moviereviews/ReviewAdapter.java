@@ -69,6 +69,7 @@ class ReviewAdapter extends BaseAdapter
         return v;
     }
 }
+
 class ViewHolder1
 {
 

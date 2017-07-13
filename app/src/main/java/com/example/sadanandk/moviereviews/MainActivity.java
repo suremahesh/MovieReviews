@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.favorite:
+
+                Intent i = new Intent(this,FavoriteActivity.class);
+                startActivity(i);
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -162,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
                 List<Result> record = response.body().getResults();
-                for (Result ac : record) {
+                for ( Result ac : record) {
                     pj = new PojoImage();
                     pj.setUrl(ac.getPosterPath());
                     pj.setId(ac.getId().toString());
